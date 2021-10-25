@@ -27,9 +27,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+      - run: echo Hello, world!
       - run: npm install
       - run: npm run build
-      - run: npm test
+#      - run: npm test
 #      - uses: TofazzalTopu/squarebear-frontend@develop
 #        with:
 #          args: --acl public-read --follow-symlinks --delete
