@@ -1,0 +1,15 @@
+<svg id="check_circle_black_24dp" xmlns="http://www.w3.org/2000/svg" width="105.22" height="105.22" viewBox="0 0 105.22 105.22">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #6cd8ba;
+      }
+    </style>
+  </defs>
+  <path id="Path_4690" data-name="Path 4690" class="cls-1" d="M0,0H105.22V105.22H0Z"/>
+  <path id="Path_4691" data-name="Path 4691" class="cls-2" d="M45.842,2A43.842,43.842,0,1,0,89.683,45.842,43.858,43.858,0,0,0,45.842,2ZM37.073,67.762,15.152,45.842l6.182-6.182,15.739,15.7L70.349,22.079,76.531,28.3Z" transform="translate(6.768 6.768)"/>
+</svg>

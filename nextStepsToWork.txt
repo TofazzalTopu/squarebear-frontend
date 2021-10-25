@@ -1,0 +1,488 @@
+#1 need to fix and reduce the error message collaborator and make a reusable Component
+#2 need to update data name and meaning ful name of the node and meaningful edge id name and self explanatory thing
+
+
+
+
+
+ <ClickAwayListener onClickAway={() => setOpenClickWayListener(false)}>
+        <Box className={classes.ClickRoot}>
+          {openClickWayListener && (
+            <div className={classes.dropdown}>
+              <Typography variant='h6' component='p'>
+                Add New Instruction
+              </Typography>
+              <form
+                noValidate
+                autoComplete='off'
+                onSubmit={handleSubmit(onSubmit)}
+              >
+                <Grid container>
+                  <Grid item md={4}>
+                    <TextField
+                      style={{ margin: '20px' }}
+                      variant='outlined'
+                      label='Source'
+                      placeholder='Source'
+                      {...register('source', {
+                        required: true,
+                        maxLength: 30,
+                        pattern: {
+                          value: /^\s*([a-zA-Z]+\s*){3}$/,
+                          message: 'Three Words Format Only',
+                        },
+                      })}
+                    />
+                    {errors.source && (
+                      <Typography style={{ margin: '0', color: 'red' }}>
+                        {errors.source.message}
+                      </Typography>
+                    )}
+                  </Grid>
+                  <Grid item md={4}>
+                    <TextField
+                      style={{ margin: '20px' }}
+                      variant='outlined'
+                      label='Input'
+                      placeholder='Input'
+                      {...register('input', {
+                        required: true,
+                        maxLength: 30,
+                        pattern: {
+                          value: /^\s*([a-zA-Z]+\s*){3}$/,
+                          message: 'Three Words Format Only',
+                        },
+                      })}
+                    />
+                    {errors.input && (
+                      <Typography style={{ margin: '0', color: 'red' }}>
+                        {errors.input.message}
+                      </Typography>
+                    )}
+                  </Grid>
+                  <Grid item md={4}>
+                    <TextField
+                      style={{ margin: '20px' }}
+                      variant='outlined'
+                      label='Name'
+                      placeholder='Name'
+                      {...register('name', {
+                        required: true,
+                        maxLength: 30,
+                        pattern: {
+                          value: /^\s*([a-zA-Z]+\s*){3}$/,
+                          message: 'Three Words Format Only',
+                        },
+                      })}
+                    />
+                    {errors.name && (
+                      <Typography style={{ margin: '0', color: 'red' }}>
+                        {errors.name.message}
+                      </Typography>
+                    )}
+                  </Grid>
+                  <Grid item md={4}>
+                    <TextField
+                      style={{ margin: '20px' }}
+                      variant='outlined'
+                      label='Output'
+                      placeholder='Output'
+                      {...register('output', {
+                        required: true,
+                        maxLength: 30,
+                        pattern: {
+                          value: /^\s*([a-zA-Z]+\s*){3}$/,
+                          message: 'Three Words Format Only',
+                        },
+                      })}
+                    />
+                    {errors.output && (
+                      <Typography style={{ margin: '0', color: 'red' }}>
+                        Output is required
+                      </Typography>
+                    )}
+                  </Grid>
+                  <Grid item md={4}>
+                    <TextField
+                      style={{ margin: '20px' }}
+                      variant='outlined'
+                      label='Destination'
+                      placeholder='Destination'
+                      {...register('destination', {
+                        required: true,
+                        maxLength: 30,
+                        pattern: {
+                          value: /^\s*([a-zA-Z]+\s*){3}$/,
+                          message: 'Three Words Format Only',
+                        },
+                      })}
+                    />
+                    {errors.destination && (
+                      <Typography style={{ margin: '0', color: 'red' }}>
+                        {errors.destination.message}
+                      </Typography>
+                    )}
+                  </Grid>
+                  <Grid item md={4}>
+                    <TextField
+                      style={{ margin: '20px' }}
+                      variant='outlined'
+                      label='Purpose'
+                      placeholder='Add new stream'
+                      {...register('purpose', {
+                        required: true,
+                        maxLength: 30,
+                        pattern: {
+                          value: /^\s*([a-zA-Z]+\s*){3}$/,
+                          message: 'Three Words Format Only',
+                        },
+                      })}
+                    />
+                    {errors.purpose && (
+                      <Typography style={{ margin: '0', color: 'red' }}>
+                        Purpose is required
+                      </Typography>
+                    )}
+                  </Grid>
+                </Grid>
+                <Box className={classes.AddInstructionBtn}>
+                  <Button
+                    style={{ margin: '20px 20px 10px 0px' }}
+                    variant='outlined'
+                    color='primary'
+                    type='submit'
+                  >
+                    Add Instruction
+                  </Button>
+                  <Button
+                    style={{ margin: '20px 20px 10px 0px' }}
+                    variant='outlined'
+                    color='secondary'
+                    onClick={() => {
+                      setOpenClickWayListener(false);
+                      clearErrors();
+                    }}
+                  >
+                    Close
+                  </Button>
+                </Box>
+              </form>
+            </div>
+          )}
+        </Box>
+
+      </ClickAwayListener>
+
+//value stream submit
+
+
+  const onSubmit = (data) => {
+    // const streamId = nanoid(5);
+    const newvalueStream = {
+      valueStreamName: data.valueStreamName,
+      valueStreamWhy: data.valueStreamWhy,
+      persona: data.persona,
+      organizationId,
+      userId: userId,
+      // streamId,
+      // navigate: `/finalDiagram?stremId=${streamId}`,
+    };
+    console.log(newvalueStream);
+    // dispatch(addNewValueStream(newvalueStream));
+    setOpenValueStremModal(false);
+    reset();
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<form
+              className={classes.root}
+              noValidate
+              autoComplete="off"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <Controller
+                name="username"
+                control={control}
+                rules={{
+                  required: true,
+                  pattern: {
+                    value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                    message: "Entered value does not match email format",
+                  },
+                }}
+                defaultValue="tony@gmail.com"
+                render={({ field }) => (
+                  <CssTextField
+                    {...field}
+                    label="Email"
+                    variant="outlined"
+                    fullWidth
+                    type="email"
+                  />
+                )}
+              />
+              {errors.username && (
+                <Typography style={{ color: "red" }}>
+                  {errors.username.message}
+                </Typography>
+              )}
+              {errors.username?.type === "required" && (
+                <Typography
+                  style={{ color: "red" }}
+                >{`Enter your valid mail`}</Typography>
+              )}
+
+              <Controller
+                name="password"
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: true,
+                }}
+                render={({ field }) => (
+                  <CssTextField
+                    variant="outlined"
+                    {...field}
+                    fullWidth
+                    label="Password"
+                    type={values.showPassword ? "text" : "password"}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleClickShowPassword}>
+                            {values.showPassword ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
+              />
+              {errors.password?.type === "required" && (
+                <Typography style={{ color: "red" }}>
+                  Password is required
+                </Typography>
+              )}
+              <Box
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  margin: "20px 0px",
+                }}
+              >
+                <Button
+                  type="submit"
+                  size="large"
+                  variant="contained"
+                  color="primary"
+                  style={{ display: "inline-block" }}
+                >
+                  LOGIN
+                </Button>
+                <Typography variant="body2" color="primary" component="span">
+                  <Link
+                    style={{ textDecoration: "none" }}
+                    to="/forgot-password"
+                  >
+                    <Typography
+                      variant="body2"
+                      color="primary"
+                      component="span"
+                      style={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    textAlign: "left",
+                  }}
+                    >
+                      {" "}
+                      &nbsp; FORGOT PASSWORD
+                    </Typography>{" "}
+                  </Link>
+                </Typography>
+              </Box>
+            </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <Box style={{ margin: "20px 120px" }}>
+            <Typography
+              className={classes.welcomeMessage}
+              variant="body1"
+              component="h3"
+            >
+              Welcome back
+            </Typography>
+
+            <form
+              className={classes.root}
+              noValidate
+              autoComplete="off"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <Controller
+                name="username"
+                control={control}
+                rules={{
+                  required: true,
+                  pattern: {
+                    value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                    message: "Entered value does not match email format",
+                  },
+                }}
+                defaultValue="tony@gmail.com"
+                render={({ field }) => (
+                  <CssTextField
+                    {...field}
+                    label="Email"
+                    variant="outlined"
+                    fullWidth
+                    type="email"
+                  />
+                )}
+              />
+              {errors.username && (
+                <Typography component="span" style={{ color: "red" }}>
+                  {errors.username.message}
+                </Typography>
+              )}
+              {errors.username?.type === "required" && (
+                <Typography
+                  component="span"
+                  style={{ color: "red" }}
+                >{`Enter your valid mail`}</Typography>
+              )}
+
+              <Controller
+                name="password"
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: true,
+                }}
+                render={({ field }) => (
+                  <CssTextField
+                    variant="outlined"
+                    {...field}
+                    fullWidth
+                    label="Password"
+                    type={values.showPassword ? "text" : "password"}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleClickShowPassword}>
+                            {values.showPassword ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
+              />
+              {errors.password?.type === "required" && (
+                <Typography component="span" style={{ color: "red" }}>
+                  Password is required
+                </Typography>
+              )}
+              <Box
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  margin: "20px 0px",
+                }}
+              >
+                <Button
+                  type="submit"
+                  size="large"
+                  variant="contained"
+                  color="primary"
+                  style={{ display: "inline-block" }}
+                >
+                  LOGIN
+                </Button>
+                <Typography variant="body2" color="primary" component="span">
+                  <Link
+                    style={{ textDecoration: "none" }}
+                    to="/forgot-password"
+                  >
+                    <Typography
+                      variant="body2"
+                      color="primary"
+                      component="span"
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                        textAlign: "left",
+                        marginRight: "45px",
+                      }}
+                    >
+                      {" "}
+                      &nbsp; FORGOT PASSWORD
+                    </Typography>{" "}
+                  </Link>
+                </Typography>
+              </Box>
+            </form>
+
+            <Typography style={{ color: "#000", fontWeight: "500" }}>
+              <Link style={{ textDecoration: "none" }} to="/signup">
+                <Typography
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    textAlign: "left",
+                  }}
+                  variant="body2"
+                  color="primary"
+                  component="span"
+                >
+                  SIGNUP
+                </Typography>
+              </Link>
+            </Typography>
+          </Box>
+
+
+
+
+
+
+
+
+
+
+
+
+

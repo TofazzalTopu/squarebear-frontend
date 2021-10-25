@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Asap&display=swap");
+body {
+  margin: 0;
+  font-family: "Asap", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+}
+/* :root {
+  overflow-x: hidden;
+} */
+
+code {
+  font-family: Asap, sans-serif;
+}
+a {
+  text-decoration: none;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(20, 81, 194);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(31, 105, 241);
+}

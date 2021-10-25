@@ -1,0 +1,701 @@
+import React, { useState, useRef, useEffect } from 'react';
+import ReactFlow, {
+  addEdge,
+  removeElements,
+  Controls,
+  Background,
+  useStoreState,
+  updateEdge,
+} from 'react-flow-renderer';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import RectangleNode from '../../Components/FlowComponents/CustomNode';
+import DiamondNode from '../../Components/FlowComponents/DiamondNode';
+import OutputNode from '../../Components/FlowComponents/OutputNode';
+import StartNode from '../../Components/FlowComponents/StartNode';
+import DataGridOfProcessNode from '../../Components/FlowComponents/ProcessNodeGrid';
+import ConnectionLine from '../../Components/FlowComponents/ConnectionLine';
+import CustomEdge from '../../Components/FlowComponents/CustomEdge';
+import Layout from '../../Components/Layout';
+import WebSocks from '../InitialSock/WebSocks';
+import './dnd.css';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  loadDiagramFromBackend,
+  addNodeDataToTheTable,
+  editableNodeDataToTheTable,
+  updateNodeDataToTheTable,
+  // editNodeDataToTheTable,
+  loadNodeDataToTheTableFromServer,
+  cloaseEditableNodeDataToTheTable,
+  getNewValueStream,
+} from '../../redux/actions';
+import { nanoid } from 'nanoid';
+import {
+  TextField,
+  makeStyles,
+  Button,
+  Grid,
+  Typography,
+  Box,
+  Snackbar,
+} from '@material-ui/core';
+
+import TableModal from '../../Components/Reusable/TableModal';
+import { useForm, Controller } from 'react-hook-form';
+import CssTextField from '../../Components/Reusable/CssTextField';
+import { useLocation } from 'react-router-dom';
+const nodeTypes = {
+  start: StartNode,
+  end: OutputNode,
+  rectangle: RectangleNode,
+  diamond: DiamondNode,
+};
+const edgeTypes = {
+  custom: CustomEdge,
+};
+//loaded from api or Empty Array
+const initText = 'Write your Text';
+
+const FinalDiagram = () => {
+  const { search } = useLocation();
+  const searchId = new URLSearchParams(search).get('streamId');
+
+  //from whole selected ELements
+  // const selectedElements = useStoreState((store) => store.selectedElements);
+
+  //redux start
+  const {
+    decisionNodeInitialData,
+    initialElements,
+    valueStream,
+    editableData,
+  } = useSelector((state) => state.diagram);
+  const auth = useSelector((state) => state.auth);
+  const { organizationId } = auth?.user;
+  const dispatch = useDispatch();
+  // console.log(valueStream);
+  //main Elements State
+  const [personaDataToTheNode, setPersonaDataToTheNode] = useState({});
+  const [elements, setElements] = useState([]);
+
+  //component Did mount or unmount
+  useEffect(() => {
+    if (organizationId) {
+      dispatch(getNewValueStream(organizationId));
+      dispatch(loadDiagramFromBackend(organizationId));
+    }
+  }, [organizationId, dispatch]);
+
+  //initial Data or from backend uder the organization
+  useEffect(() => {
+    if (initialElements.messageContent) {
+      setElements(initialElements.messageContent);
+    }
+  }, [initialElements.messageContent]);
+  //stream Id
+
+  useEffect(() => {
+    const particularData = valueStream.find((stream) => stream.id === searchId);
+    setPersonaDataToTheNode(particularData);
+  }, [searchId, valueStream]);
+
+  // console.log({ personaDataToTheNode });
+
+  //useRef for DOM node
+  const reactFlowWrapper = useRef(null);
+  //instance
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  //opening the Modal of form
+  const [openDoubleClick, setOpenDoubleClick] = useState(false);
+  // const [opened, setopened] = useState(false);
+  const [openeds, setopeneds] = useState(false);
+  //opening the Modal of form
+  //modal Data
+  const [updatedData, setUpdatedData] = useState({});
+  //state changes on websocket
+  const [pendingRequest, setPendingRequest] = useState(false);
+
+  useEffect(() => {
+    dispatch(loadNodeDataToTheTableFromServer(updatedData.data?.nodeData));
+  }, [updatedData, dispatch]);
+  //onConnect Function
+  const onConnect = (params) => {
+    setElements((els) =>
+      addEdge(
+        {
+          type: 'smoothstep',
+          style: { stroke: 'black' },
+          selectable: true,
+          ...params,
+          arrowHeadType: 'arrow',
+        },
+        els
+      )
+    );
+    setPendingRequest(true);
+  };
+  const onEdgeUpdate = (oldEdge, newConnection) => {
+    setElements((els) => updateEdge(oldEdge, newConnection, els));
+    setPendingRequest(true);
+  };
+  const onElementsRemove = (elementsToRemove) => {
+    setElements((els) => removeElements(elementsToRemove, els));
+    setPendingRequest(true);
+  };
+
+  const onLoad = (_reactFlowInstance) => {
+    setReactFlowInstance(_reactFlowInstance);
+  };
+
+  const onDragOver = (event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  };
+  // const handleCloses = () => {
+  //   setopened(false);
+  // };
+
+  const PopUp = () => {
+    return (
+      <div>
+        <h3 style={{ color: 'red' }}>Need to check all the name fields</h3>
+      </div>
+    );
+  };
+  const onDrop = (event) => {
+    event.preventDefault();
+    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+    const type = event.dataTransfer.getData('application/reactflow');
+    const position = reactFlowInstance.project({
+      x: event.clientX - reactFlowBounds.left,
+      y: event.clientY - reactFlowBounds.top,
+    });
+
+    //new node Data
+    const newNode = {
+      id: `node_${type}_${nanoid(7)}`,
+      type,
+      position,
+      data: {
+        label: `${type} node`,
+        text: initText,
+        processName: initText,
+        persona: personaDataToTheNode.persona,
+        processWhy: '',
+        nodeData: [],
+      },
+    };
+    setElements((es) => es.concat(newNode));
+    // setPendingRequest(true);
+  };
+  //TODO_RUNNING save handleSaveAllDataToTheDecisionNode
+  const handleSaveAllDataToTheDecisionNode = () => {
+    if (decisionNodeInitialData) {
+      const dataExist = decisionNodeInitialData.find(
+        (item) => item.name === ''
+      );
+      console.log(dataExist);
+      if (dataExist) {
+        setopeneds(true);
+        return;
+      } else {
+        setopeneds(false);
+      }
+      const els = [...elements];
+
+      const maped = els.map((el) => {
+        if (el.id === updatedData.id) {
+          el.data.nodeData = decisionNodeInitialData;
+        }
+        return el;
+      });
+      setElements(maped);
+      setPendingRequest(true);
+    }
+    dispatch(cloaseEditableNodeDataToTheTable(false));
+    setOpenDoubleClick(false);
+  };
+  const {
+    formState: { errors },
+    clearErrors,
+    control,
+    handleSubmit,
+    reset,
+  } = useForm();
+
+  //TODOupdate Node Data of particular thing
+  const onUpdateSubmit = (data) => {
+    if (data && updatedData.id) {
+      const els = [...elements];
+      const maped = els.map((el) => {
+        if (el.id === updatedData.id) {
+          el.data = data;
+        }
+        return el;
+      });
+      setElements(maped);
+      setPendingRequest(true);
+      reset();
+      setUpdatedData({});
+      setOpenDoubleClick(false);
+    }
+  };
+
+  //add new ProcessNodeData for the decision node
+  const renderOpenClickWayListener = () => {
+    let id = nanoid(5);
+    const data = {
+      id,
+      source: '',
+      input: '',
+      destination: '',
+      name: '',
+      purpose: '',
+      output: '',
+    };
+    dispatch(addNodeDataToTheTable(data));
+  };
+  //renderTableModalForUpdateNode
+
+  const handleCloseModal = () => {
+    handleSaveAllDataToTheDecisionNode();
+    setOpenDoubleClick(false);
+  };
+  //renderFormUpdateOnDoubleClick
+  const renderFormUpdateOnDoubleClick = (updatedData) => {
+    return (
+      <form
+        noValidate
+        autoComplete='off'
+        onSubmit={handleSubmit(onUpdateSubmit)}
+      >
+        <Grid container>
+          <Grid item md={4}>
+            <Controller
+              name='processName'
+              control={control}
+              defaultValue={updatedData.data?.processName}
+              rules={{
+                required: true,
+                maxLength: 30,
+                pattern: {
+                  value: /^\s*([a-zA-Z]+\s*){3}$/,
+                  message: 'Three Words Format Only',
+                },
+              }}
+              render={({ field }) => (
+                <CssTextField
+                  {...field}
+                  label='Process Name'
+                  variant='outlined'
+                  type='text'
+                />
+              )}
+            />
+
+            {errors.processName && (
+              <Typography style={{ margin: '0' }} color='error'>
+                {errors.processName.message}
+              </Typography>
+            )}
+          </Grid>
+
+          <Grid item md={4}>
+            <Controller
+              name='processWhy'
+              control={control}
+              defaultValue={updatedData.data?.processWhy}
+              rules={{
+                required: true,
+                maxLength: 30,
+                pattern: {
+                  value: /^\s*([a-zA-Z]+\s*){3}$/,
+                  message: 'Three Words Format Only',
+                },
+              }}
+              render={({ field }) => (
+                <CssTextField
+                  {...field}
+                  label='Process Name Why'
+                  variant='outlined'
+                  type='text'
+                />
+              )}
+            />
+            {errors.processWhy && (
+              <Typography style={{ margin: '0', color: 'red' }}>
+                {errors.processWhy.message}
+              </Typography>
+            )}
+          </Grid>
+          <Grid item md={4}>
+            <TextField
+              id='outlined-read-only-input'
+              label='Persona'
+              value={updatedData.data?.persona}
+              InputProps={{
+                readOnly: true,
+              }}
+              variant='outlined'
+            />
+          </Grid>
+        </Grid>
+
+        <Box className={classes.AddInstructionBtn}>
+          <Button
+            style={{ margin: '20px 20px 10px 0px' }}
+            variant='outlined'
+            color='primary'
+            type='submit'
+          >
+            Update Node Data
+          </Button>
+        </Box>
+      </form>
+    );
+  };
+
+  const renderTableModalForUpdateNodeData = () => {
+    return (
+      <TableModal open={openDoubleClick} handleClose={handleCloseModal}>
+        <Box className={classes.table_header}>
+          <div>
+            <h1>{updatedData.data?.processName} </h1>
+          </div>
+        </Box>
+        <Box style={{ minWidth: '800px' }}>
+          {renderFormUpdateOnDoubleClick(updatedData)}
+        </Box>
+
+        {updatedData.type === 'rectangle' ? (
+          <Box>
+            <Box className={classes.button__container__of___table}>
+              <Button
+                className={classes.buttonForTable}
+                variant='contained'
+                color='primary'
+                onClick={renderOpenClickWayListener}
+              >
+                Add New Instruction
+              </Button>
+              <Button
+                className={classes.buttonForTable}
+                variant='contained'
+                color='secondary'
+                onClick={handleSaveAllDataToTheDecisionNode}
+              >
+                Save All Instruction
+              </Button>
+            </Box>
+            <Box>{openeds && PopUp()}</Box>
+            <DataGridOfProcessNode rows={decisionNodeInitialData} />
+          </Box>
+        ) : (
+          <Box></Box>
+        )}
+      </TableModal>
+    );
+  };
+
+  //onNodeDoubleClick
+  //TODO need to update
+  const onNodeDoubleClick = (event, element) => {
+    setOpenDoubleClick(true);
+    const data = { ...element };
+    setUpdatedData(data);
+  };
+  const SideBar = () => {
+    const onDragStart = (event, nodeType) => {
+      event.dataTransfer.setData('application/reactflow', nodeType);
+      event.dataTransfer.effectAllowed = 'move';
+    };
+    return (
+      <aside>
+        <div className='description'>
+          You can drag these nodes to the pane on the left.
+        </div>
+        <div
+          title='start'
+          style={{
+            background: '#4741BE',
+            color: 'white',
+            padding: '20px 10px',
+            borderRadius: '7px',
+            margin: '20px 0px',
+          }}
+          className='dndnode'
+          onDragStart={(event) => onDragStart(event, 'start')}
+          draggable
+        >
+          <AddCircleOutlineIcon style={{ marginRight: '4px' }} /> Start
+        </div>
+        <div
+          title='rectangle'
+          style={{
+            background: '#4741BE',
+            color: 'white',
+            padding: '20px 40px',
+            borderRadius: '7px',
+            margin: '20px 0px',
+          }}
+          className='dndnode'
+          onDragStart={(event) => onDragStart(event, 'rectangle')}
+          draggable
+        >
+          <AddCircleOutlineIcon style={{ marginRight: '4px' }} /> Decision
+        </div>
+        <div
+          title='decision'
+          className='dndnode'
+          onDragStart={(event) => onDragStart(event, 'diamond')}
+          draggable
+          style={{
+            background: '#4741BE',
+            color: 'white',
+            padding: '20px 10px',
+            borderRadius: '7px',
+            margin: '20px 0px',
+          }}
+        >
+          <AddCircleOutlineIcon style={{ marginRight: '4px' }} /> Diamond
+        </div>
+        <div
+          title='end'
+          style={{
+            background: '#4741BE',
+            color: 'white',
+            padding: '20px 40px',
+            borderRadius: '7px',
+            margin: '20px 0px',
+          }}
+          className='dndnode'
+          onDragStart={(event) => onDragStart(event, 'end')}
+          draggable
+        >
+          <AddCircleOutlineIcon style={{ marginRight: '4px' }} /> End
+        </div>
+      </aside>
+    );
+  };
+  const classes = useStyles();
+  return (
+    <Layout>
+      <div className={classes.root}>
+        <div className='dndflow'>
+          <div className='reactflow-wrapper' ref={reactFlowWrapper}>
+            <ReactFlow
+              nodeTypes={nodeTypes}
+              connectionLineComponent={ConnectionLine}
+              connectionLineType='smoothstep'
+              elements={elements}
+              onConnect={onConnect}
+              onElementsRemove={onElementsRemove}
+              onLoad={onLoad}
+              onDrop={onDrop}
+              edgeTypes={edgeTypes}
+              onDragOver={onDragOver}
+              onNodeDoubleClick={onNodeDoubleClick}
+              onEdgeUpdate={onEdgeUpdate}
+              arrowHeadColor='#595A66'
+            >
+              <Background variant='dots' gap={12} size={0.8} />
+              <Controls />
+            </ReactFlow>
+          </div>
+          {SideBar()}
+          {openDoubleClick && renderTableModalForUpdateNodeData()}
+        </div>
+      </div>
+      <WebSocks
+        setElements={setElements}
+        elements={elements}
+        pendingRequest={pendingRequest}
+        setPendingRequest={setPendingRequest}
+      />
+    </Layout>
+  );
+};
+
+export default FinalDiagram;
+
+const useStyles = makeStyles((theme) => ({
+  ClickRoot: {
+    position: 'relative',
+  },
+  dropdown: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    left: 0,
+    zIndex: 100000000000000,
+    border: '1px solid',
+    padding: theme.spacing(1),
+    backgroundColor: theme.palette.background.paper,
+  },
+  button__container__of___table: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    padding: 20,
+  },
+  toolbarGroup: {
+    background: '#FFF',
+    border: '1px solid darkgrey',
+    padding: '4px',
+  },
+  table_header: {
+    border: '1px solid gray',
+    background: '#005ae5',
+    color: 'white',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: '0px 20px',
+    marginBottom: '30px',
+  },
+  attributeGroup: {
+    paddingTop: '5px',
+  },
+  nodetext: {
+    margin: '25px 0px 10px 0px',
+    background: 'white',
+    width: '100%',
+  },
+  buttonForTable: {
+    marginBottom: 29,
+  },
+}));
+
+
+
+
+
+ <Grid spacing={2} container>
+            <Grid item container sm={12} md={8} lg={8}>
+              <Grid item sm={12} md={6} lg={6}>
+                <FirstCard
+                  titleVariant="h5"
+                  titleColor="warning"
+                  titleText="Problem statement"
+                  description="We are very opening to do that basic thing so that if
+                    you want to discus about out web app please discuss. "
+                  linkTo="templates"
+                  linkData="Edit"
+                />
+              </Grid>
+              <Grid item sm={12} md={6} lg={6}>
+                <FirstCard
+                  titleVariant="h5"
+                  titleColor="warning"
+                  titleText="Problem statement"
+                  description="We are very
+                    opening to do that basic
+                     thing so that if you want
+                      to discus about out
+                    web app please discuss. "
+                  isButton
+                  buttonText="Add New"
+                  linkTo="templates"
+                  linkData="Edit"
+                />
+              </Grid>
+              <Grid item xs={12} md={12} lg={12}>
+                <StreamCard
+                  titleVariant="h5"
+                  titleText="Value Strem"
+                  linkData="Edit"
+                  linkTo=""
+                >
+                  <Grid
+                    style={{
+                      scrollDirection: "horizontal",
+                      overflowX: "scroll",
+                      overflowY: "",
+                      whiteSpace: "nowrap",
+                    }}
+                    container
+                    spacing={2}
+                  >
+                    {valueStream.length > 0
+                      ? valueStream.map((item, index) => (
+                          <Grid
+                            style={{
+                              display: "inline-block",
+                            }}
+                            key={index}
+                            item
+                            md={2}
+                          >
+                            <div
+                              style={{
+                                cursor: "pointer",
+                                display: "inline-block",
+                              }}
+                              onClick={() =>
+                                history.push(
+                                  `/finalDiagram?streamId=${item.id}`
+                                )
+                              }
+                            >
+                              <div
+                                style={{
+                                  borderRadius: "50%",
+                                  background: "#f6bb65",
+                                  height: "128px",
+                                  width: "128px",
+                                  display: "flex",
+                                  padding: "1.5rem",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <p
+                                  style={{
+                                    color: "black",
+                                    wordBreak: "break-all",
+                                    fontSize: "15px",
+                                    whiteSpace: " normal",
+                                    textAlign: "center",
+                                  }}
+                                >
+                                  {item.valueStreamName}
+                                </p>
+                              </div>
+                            </div>
+                          </Grid>
+                        ))
+                      : null}
+
+                    <div
+                      style={{
+                        borderRadius: "50%",
+                        background: "#d1bb9b",
+                        height: "128px",
+                        display: "flex",
+                        marginTop: "10px",
+                        marginLeft: "10px",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "128px",
+                      }}
+                    >
+                      <Button
+                        onClick={handleOpenModalForValueStream}
+                        style={{
+                          color: "gray",
+                          fontSize: "15px",
+                        }}
+                        endIcon={
+                          <AddCircleOutlineIcon
+                            style={{
+                              height: "60px",
+                              width: "80px",
+                            }}
+                          />
+                        }
+                      />
+                    </div>
+                  </Grid>
+                </StreamCard>
+              </Grid>
+            </Grid>
+          </Grid>

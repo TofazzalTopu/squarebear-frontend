@@ -1,0 +1,61 @@
+/*
+.scrollUpStyle>div:not(:last-child)>div>div{
+  position: relative;
+  &:after {
+    content:'';
+    position: absolute;
+    background: `url(${images.arrow})`
+    backgroundRepeat: "no-repeat"
+    height: "50px"
+    left: "103%
+
+  },
+}
+
+.scrollUpStyle{
+    "&>div:not(:last-child)": {
+      "&>div": {
+        "&>div": {
+          position: "relative",
+          "&:after": {
+            content: "''",
+            position: "absolute",
+            background: `url(${images.arrow})`,
+            backgroundRepeat: "no-repeat",
+            height: "50px",
+            left: "103%",
+            // [theme.breakpoints.up("md")]: {
+            //   width: "100%",
+            //   left: "100%",
+            //   backgroundSize: "auto",
+            // },
+            [theme.breakpoints.down("md")]: {
+              width: "300px",
+              backgroundSize: "auto",
+              left: "93%",
+            },
+            [theme.breakpoints.up("md")]: {
+              //min
+              width: "300px",
+              height: "70px",
+              left: "8%",
+              backgroundPosition: "center",
+            },
+            [theme.breakpoints.up("lg")]: {
+              //min
+              width: "300px",
+              height: "80px",
+              left: "15%",
+              backgroundPosition: "center",
+            },
+            [theme.breakpoints.down("xl")]: {
+              width: "300px",
+              height: "90px",
+              left: "14%",
+              backgroundPosition: "center",
+            },
+          },
+        },
+      },
+    },
+  }, */
