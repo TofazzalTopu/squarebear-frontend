@@ -30,7 +30,7 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm test
-      - uses: jakejarvis/s3-sync-action@develop
+      - uses: TofazzalTopu/squarebear-frontend@develop
         with:
           args: --acl public-read --follow-symlinks --delete
         env:
