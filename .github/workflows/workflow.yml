@@ -28,7 +28,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Clone repository
+        uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -49,7 +50,7 @@ jobs:
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v2
         with:
-          name: react-github-actions-build
+          name: workflow
           path: build
       - name: Configure AWS credentials
           #        uses: TofazzalTopu/squarebear-frontend@develop
@@ -74,7 +75,7 @@ jobs:
       #      - name: Share artifact inside workflow
       #        uses: actions/upload-artifact@v1
       #        with:
-      #          name: react-github-actions-build
+      #          name: workflow
       #          path: build
       #  deploy:
       #    runs-on: ubuntu-latest
@@ -86,7 +87,7 @@ jobs:
       #      - name: Get artifact
       #        uses: actions/download-artifact@v1
       #        with:
-      #          name: react-github-actions-build
+      #          name: workflow
       # Set the credentials from repository settings/secrets
       #      - name: Configure AWS credentials
       #        #        uses: aws-actions/configure-aws-credentials@v1
