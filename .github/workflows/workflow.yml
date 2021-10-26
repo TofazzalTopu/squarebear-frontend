@@ -43,8 +43,8 @@ jobs:
       #        run: npm test
 
       - name: Build
-#        run: npm --build-from-source install
-        run: npm run build
+        run: npm --build-from-source install
+#        run: npm run build
       #      - run: npm test
       # Share artifact inside workflow
       - name: Share artifact inside workflow
