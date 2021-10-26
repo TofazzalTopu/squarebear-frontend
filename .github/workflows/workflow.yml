@@ -49,8 +49,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         #        uses: jakejarvis/s3-sync-action@develop
         with:
-          args: --acl public-read --follow-symlinks --delete
-        env:
+#          args: --acl public-read --follow-symlinks --delete
+#        env:
           #          AWS_S3_BUCKET: 'square-bear'
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           #          aws-access-key-id: 'AKIAYSL7IVCPN5NAYBVK'
