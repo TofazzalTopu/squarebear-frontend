@@ -37,20 +37,20 @@ jobs:
       #      - name: Install dependencies
       #        run: npm install
       - name: Install NPM packages
-        run: npm install
+        run: npm i
 
       #      - name: Run the tests
       #        run: npm test
 
       - name: Build
-        run: npm --build-from-source install
-      #        run: npm run build
+#        run: npm --build-from-source install
+        run: npm run build
       #      - run: npm test
       # Share artifact inside workflow
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v2
         with:
-          name: workflow
+          name: sqbearapp
           path: build
       - name: Configure AWS credentials
           #        uses: TofazzalTopu/squarebear-frontend@develop
@@ -75,7 +75,7 @@ jobs:
       #      - name: Share artifact inside workflow
       #        uses: actions/upload-artifact@v1
       #        with:
-      #          name: workflow
+      #          name: sqbearapp
       #          path: build
       #  deploy:
       #    runs-on: ubuntu-latest
@@ -87,7 +87,7 @@ jobs:
       #      - name: Get artifact
       #        uses: actions/download-artifact@v1
       #        with:
-      #          name: workflow
+      #          name: sqbearapp
       # Set the credentials from repository settings/secrets
       #      - name: Configure AWS credentials
       #        #        uses: aws-actions/configure-aws-credentials@v1
