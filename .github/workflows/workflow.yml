@@ -42,7 +42,8 @@ jobs:
 #        run: npm test
 
       - name: Build
-        run: npm run build
+        run: npm --build-from-source install
+#        run: npm run build
 #      - run: npm test
 #      - uses: TofazzalTopu/squarebear-frontend@develop
 #        with:
