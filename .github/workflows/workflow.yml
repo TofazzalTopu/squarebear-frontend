@@ -45,9 +45,15 @@ jobs:
         run: npm --build-from-source install
       #        run: npm run build
       #      - run: npm test
+      # Share artifact inside workflow
+      - name: Share artifact inside workflow
+        uses: actions/upload-artifact@v1
+        with:
+          name: react-github-actions-build
+          path: build
       - name: Configure AWS credentials
-        uses: TofazzalTopu/squarebear-frontend@develop
-        #        uses: aws-actions/configure-aws-credentials@v1
+          #        uses: TofazzalTopu/squarebear-frontend@develop
+        uses: aws-actions/configure-aws-credentials@v1
         #        uses: jakejarvis/s3-sync-action@develop
         with:
           #          args: --acl public-read --follow-symlinks --delete
