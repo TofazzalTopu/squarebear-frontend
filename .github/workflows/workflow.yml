@@ -52,6 +52,19 @@ jobs:
         with:
           name: sqbearapp
           path: /build
+     
+      - name: Create Artifact Folder
+        run: New-Item -Path '${{ github.workspace }}' -Name "Artifacts" -ItemType "directory"
+        #shell: powershell
+      - name: Copy Scripts
+        run: Copy 'Scripts/' '${{ github.workspace }}/Artifacts/Scripts'
+        #shell: powershell
+      - name: Publish Artifact
+        uses: actions/upload-artifact@v2
+        with:
+         path: ${{ github.workspace }}/Artifacts
+         name: ${{ github.run_number }}
+     
       - name: Configure AWS credentials
           #        uses: TofazzalTopu/squarebear-frontend@develop
         uses: aws-actions/configure-aws-credentials@v1
