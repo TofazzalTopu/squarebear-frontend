@@ -60,7 +60,7 @@ jobs:
       #      - run: npm test
       # Share artifact inside workflow
       - name: create folder
-        run:  mkdir -p ${{ github.workspace }}/Artifacts/build
+        run:  mkdir -p ${{ github.workspace }}/Artifacts/${{ github.run_number }}
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v2.2.4
         with:
