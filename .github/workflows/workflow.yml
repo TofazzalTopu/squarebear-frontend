@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: sqbearapp
-          path: build
+          path: /build
       - name: Configure AWS credentials
           #        uses: TofazzalTopu/squarebear-frontend@develop
         uses: aws-actions/configure-aws-credentials@v1
