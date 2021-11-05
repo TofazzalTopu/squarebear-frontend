@@ -46,8 +46,8 @@ jobs:
        # run: npm --build-from-source install
       #- name: Build  
         run: npm run build --if-present
-        env:       
-          CI: true
+       # env:       
+        #  CI: true
           
 #        run: npm run build
       #      - run: npm test
