@@ -538,7 +538,7 @@ const Layout = ({ children, onDiagram }) => {
       {/* main content */}
       <div className={classes.page}>
         <div className={classes.toolbar}></div>
-        {openAddUserModal && roleType == "ADMIN" && renderUserSignUpModel()}
+        {openAddUserModal && roleType === "ADMIN" && renderUserSignUpModel()}
         {children}
       </div>
     </div>
