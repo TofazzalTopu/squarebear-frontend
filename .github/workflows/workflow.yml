@@ -64,8 +64,9 @@ jobs:
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: ./build
-          path: build
+          path: ${{ github.workspace }}/Artifacts
+          name: ${{ github.run_number }}
+          
 #       - name: Copy Scripts
 #         run: Copy 'Scripts/' '${{ github.workspace }}/Artifacts/Scripts'
       
