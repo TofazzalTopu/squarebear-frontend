@@ -37,10 +37,15 @@ jobs:
       #      - name: Install dependencies
       #        run: npm install
       - name: Install NPM packages
-        run: npm i
+#         run: npm i
 #         run: yarn
 #       - run: yarn run build
 
+      - name: npm install, build
+        run: |
+          npm install
+          npm run build --if-present
+          #npm test
       #      - name: Run the tests
       #        run: npm test
 
@@ -57,15 +62,15 @@ jobs:
       - name: create folder
         run:  mkdir -p build
       - name: Share artifact inside workflow
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.4
         with:
-          name: sqbearapp
+          name: build
           path: build
 #       - name: Copy Scripts
 #         run: Copy 'Scripts/' '${{ github.workspace }}/Artifacts/Scripts'
       
       - name: Publish Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.4
         with:
          path: ${{ github.workspace }}/Artifacts
          name: ${{ github.run_number }}
