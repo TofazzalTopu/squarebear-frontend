@@ -59,7 +59,14 @@ jobs:
         with:
           name: sqbearapp
           path: build
-     
+      - name: Copy Scripts
+        run: Copy 'Scripts/' '${{ github.workspace }}/Artifacts/Scripts'
+      
+      - name: Publish Artifact
+        uses: actions/upload-artifact@v2
+        with:
+         path: ${{ github.workspace }}/Artifacts
+         name: ${{ github.run_number }}
       
       - name: Configure AWS credentials
           #        uses: TofazzalTopu/squarebear-frontend@develop
@@ -76,7 +83,7 @@ jobs:
           #          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           #          AWS_REGION: ${{ secrets.AWS_REGION }}   # optional: defaults to us-east-1
           aws-region: 'ap-southeast-2'   # optional: defaults to us-east-1
-          SOURCE_DIR: 'build'      # optional: defaults to entire repository
+         # SOURCE_DIR: 'build'      # optional: defaults to entire repository
 
       #      - env:
       #          CI: true
