@@ -37,15 +37,15 @@ jobs:
       #      - name: Install dependencies
       #        run: npm install
       - name: Install NPM packages
-#         run: npm i
-        run: yarn
-      - run: yarn run build
+        run: npm i
+#         run: yarn
+#       - run: yarn run build
 
       #      - name: Run the tests
       #        run: npm test
 
-#       - name: Build
-#         run: npm --build-from-source install
+      - name: Build
+        run: npm --build-from-source install
       #- name: Build  
       #  run: npm run build --if-present
        # env:       
@@ -61,8 +61,8 @@ jobs:
         with:
           name: sqbearapp
           path: build
-      - name: Copy Scripts
-        run: Copy 'Scripts/' '${{ github.workspace }}/Artifacts/Scripts'
+#       - name: Copy Scripts
+#         run: Copy 'Scripts/' '${{ github.workspace }}/Artifacts/Scripts'
       
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
