@@ -50,8 +50,8 @@ jobs:
       #        run: npm test
 
       - name: Build
-        run: npm run-script build
-#         run: npm --build-from-source install
+#         run: npm run-script build
+        run: npm --build-from-source install
       #- name: Build  
       #  run: npm run build --if-present
        # env:       
