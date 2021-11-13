@@ -24,8 +24,7 @@ jobs:
     - name: Production Build
       run: |
         npm --build-from-source install
-        artifacts:
-        paths:
+        path:
           - build/  
 #     - name: Unit Tests
 #       run: |
