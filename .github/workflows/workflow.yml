@@ -24,8 +24,10 @@ jobs:
     - name: Production Build
       run: |
         npm --build-from-source install
-        path:
-          - build/  
+#     - name: Share artifact inside workflow
+#       uses: actions/upload-artifact@v2.2.4
+#       with:
+     #  path:- build/  
 #     - name: Unit Tests
 #       run: |
     #    yarn test
