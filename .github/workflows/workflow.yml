@@ -30,8 +30,8 @@ jobs:
 #       with:
      #  path:- build/  
 #     - name: Unit Tests
-#       run: |
-    #    yarn test
+      env:       
+        CI: false
     - name: Deploy to S3
       uses: jakejarvis/s3-sync-action@master
       with:
